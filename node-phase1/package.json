@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "cli": "node cli/text-tool.js",
+    "server": "node server/server.js",
     "event": "node src/event-loop.js",
     "async": "node src/async-await.js"
   },
