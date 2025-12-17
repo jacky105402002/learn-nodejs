@@ -1,46 +1,19 @@
-const fs = require("fs/promises");
-const path = require("path");
-const crypto = require("crypto");
+const { parseArgs } = require("./lib/parser");
+const { readFile, writeFile } = require("./lib/file");
+const { processContent } = require("./lib/processor");
 
 async function main() {
   try {
-    const args = process.argv.slice(2);
+    const { input, output, mode } = parseArgs(process.argv.slice(2));
 
-    if (args.length < 3) {
-      console.error("Usage:");
-      console.error(
-        "node text-tool.js <input> <output> --upper|--lower|--hash"
-      );
-      process.exit(1);
-    }
+    const content = await readFile(input);
+    const result = processContent(content, mode);
+    await writeFile(output, result);
 
-    const [inputFile, outputFile, mode] = args;
-
-    const inputPath = path.resolve(inputFile);
-    const outputPath = path.resolve(outputFile);
-
-    const content = await fs.readFile(inputPath, "utf-8");
-
-    let result;
-
-    switch (mode) {
-      case "--upper":
-        result = content.toUpperCase();
-        break;
-      case "--lower":
-        result = content.toLowerCase();
-        break;
-      case "--hash":
-        result = crypto.createHash("sha256").update(content).digest("hex");
-        break;
-      default:
-        throw new Error("Invalid mode");
-    }
-
-    await fs.writeFile(outputPath, result, "utf-8");
-    console.log("Success! Output written to:", outputPath);
+    console.log("Success!");
   } catch (err) {
     console.error("Error:", err.message);
+    process.exit(1);
   }
 }
 
