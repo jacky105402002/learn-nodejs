@@ -1,8 +1,13 @@
+const AppError = require("../errors/AppError");
+
 function getAllUsers() {
-  return [
-    { id: 1, name: "Jacky" },
-    { id: 2, name: "Amy" },
-  ];
+  const users = [];
+
+  if (users.length === 0) {
+    throw new AppError("No users found", 404);
+  }
+
+  return users;
 }
 
 module.exports = {
